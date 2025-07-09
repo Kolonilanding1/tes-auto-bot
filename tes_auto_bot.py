@@ -1,3 +1,11 @@
+import os
+import logging
+import asyncio
+import threading
+from datetime import datetime
+from http.server import HTTPServer, BaseHTTPRequestHandler
+
+import pytz
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import (
     Application,
@@ -6,13 +14,6 @@ from telegram.ext import (
     CallbackQueryHandler,
     ContextTypes,
 )
-import os
-import logging
-import asyncio
-import pytz
-from datetime import datetime
-
-
 
 auto_task = None
 
@@ -100,6 +101,9 @@ Satu tempat buat semua hiburan! 😈
 
 # Fungsi /start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user = update.effective_user
+    log_activity(user.id, user.username or user.first_name, "/start")
+
     keyboard = [
         [
             InlineKeyboardButton("🎁 Klaim Freebet", callback_data='claim_freebet'),
@@ -384,8 +388,6 @@ async def auto_send_messages(app: Application):
             await asyncio.sleep(30)
 
 
-# Menambahkan handler untuk callback yang sesuai
-from telegram.ext import Application
 
 async def on_startup(app: Application):
     global auto_task
@@ -393,7 +395,26 @@ async def on_startup(app: Application):
         auto_task = asyncio.create_task(auto_send_messages(app))
         logging.info("🚀 Auto-send dimulai saat startup.")
     
-# Jalankan bot
+class SimpleHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b"Bot is alive!")
+
+def start_ping_server():
+    server = HTTPServer(('0.0.0.0', 8080), SimpleHandler)
+    server.serve_forever()
+
+# Jalankan server HTTP di thread terpisah
+threading.Thread(target=start_ping_server, daemon=True).start()
+
+def log_activity(user_id, username, action):
+    try:
+        with open("userlist.txt", "a", encoding="utf-8") as f:
+            f.write(f"{datetime.now()} | {user_id} | {username} | {action}\n")
+    except Exception as e:
+        logging.error(f"Failed to write log: {e}")
+
 if __name__ == '__main__':
     app = ApplicationBuilder().token(API_TOKEN).build()
 
