@@ -1,11 +1,10 @@
-import asyncio
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, ContextTypes
 import logging
 
 logging.basicConfig(level=logging.INFO)
 
-API_TOKEN = "8110875332:AAG33TTd_CnmC_eFi58VhbNCSHL8A_EwfXA"
+API_TOKEN = "PASTE_TOKEN_BOT_KAMU_DISINI"
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [[InlineKeyboardButton("Klik saya", callback_data="clicked")]]
@@ -17,12 +16,11 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await query.answer()
     await query.edit_message_text(text=f"Tombol berhasil diklik oleh {query.from_user.first_name}!")
 
-async def main():
+def main():
     app = ApplicationBuilder().token(API_TOKEN).build()
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CallbackQueryHandler(button_handler))
-    await app.run_polling()
+    app.run_polling()  # langsung jalankan tanpa async wrapper
 
 if __name__ == "__main__":
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(main())
+    main()
