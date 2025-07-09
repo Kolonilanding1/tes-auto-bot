@@ -4,7 +4,7 @@ import logging
 
 logging.basicConfig(level=logging.INFO)
 
-API_TOKEN = "PASTE_TOKEN_BOT_KAMU_DISINI"
+API_TOKEN = "8110875332:AAG33TTd_CnmC_eFi58VhbNCSHL8A_EwfXA"
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [[InlineKeyboardButton("Klik saya", callback_data="clicked")]]
