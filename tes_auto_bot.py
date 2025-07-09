@@ -6,6 +6,7 @@ from telegram.ext import (
     CallbackQueryHandler,
     ContextTypes,
 )
+import os
 import logging
 import asyncio
 import pytz
@@ -15,7 +16,7 @@ from datetime import datetime
 
 auto_task = None
 
-API_TOKEN = '8110875332:AAG33TTd_CnmC_eFi58VhbNCSHL8A_EwfXA'
+API_TOKEN = os.environ["API_TOKEN"]
 GROUP_USERNAME = '@InfoFreebet4D','@SITUSLINKGACOR4D'
 CHANNEL_USERNAME = '@koloni4d_official1'
 TARGET_CHAT_ID = -1002658447462  # Ganti ini ke chat ID grup/channel tujuan untuk auto-text
